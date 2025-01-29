@@ -1,189 +1,98 @@
-// import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-// const Books = () => {
-//   const book1 = {
-//     id: 1,
-//     title: "مقدمة ابن خلدون ",
-//     author: "ابن خلدون ",
-//     isbn: "1289499030",
-//   };
-//   const book2 = {
-//     id: 2,
-//     title: "الحاوي في الطب ",
-//     author: "ابو بكر الرازي ",
-//     isbn: "893847239479",
-//   };
-//    const book3 = {
-//         id: 3,
-//         title: "كتاب سيبويه",
-//         author: "سيبويه",
-//         isbn: "1234567890",
-//       };
-//       const book4 = {
-//         id: 4,
-//         title: "تفسير الطبري",
-//         author: "الطبري",
-//         isbn: "0987654321",
-//       };
+const Books = () => {
+  const [books, setBooks] = useState([]); // Store Firebase data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const [addBooks, setAddBooks] = useState(0); // Error state
 
-//   const books = [book1, book2, book3, book4];
+  // ✅ Fetch data from Firebase using axios
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get(
+          "https://react-4d791-default-rtdb.firebaseio.com/books.json"
+        );
 
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         justifyContent: "center",
-//         gap: "20px",
-//         flexWrap: "wrap",
-//         margin: "40px",
-//       }}
-//     >
-//       {books.map((book) => (
-//         <div
+        if (response.data) {
+          // Convert Firebase object to array
+          const booksArray = Object.entries(response.data).map(
+            ([id, book]) => ({
+              id,
+              ...book,
+            })
+          );
+          setBooks(booksArray);
+        } else {
+          setBooks([]); // No data available
+        }
+      } catch (err) {
+        console.error("Error fetching books:", err);
+        setError("Failed to load books.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
 
-//           style={{
-//             border: "1px solid #ddd",
-//             borderRadius: "8px",
-//             padding: "20px",
-//             width: "250px",
-//             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//             backgroundColor: "#fff",
-//           }}
-//         >
-//           <h1 >
-//            ID: {book.id}
-//           </h1>
-//           <h3>
-//           Title:  {book.title}
-//           </h3>
-//           <p >
-//             Author: {book.author}
-//           </p>
-//           <p >ISBN: {book.isbn}</p>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
+    fetchBooks();
+  }, []);
 
-// export default Books;
 
-/*////********************************************* */
+  return (
 
-// import React from "react";
 
-//
-// const Books = [
-//   {  id: 1,title: "مقدمة ابن خلدون ", author: "ابن خلدون ", isbn: "1289499030", },
-//   { title: "نهج البلاغة", author: "الإمام علي", id: 2 },
-//   { title: "تاريخ الطبري", author: "الطبري", id: 3 },
-//   { title: "مقدمة ابن خلدون", author: "ابن خلدون", id: 1 },
 
-// ];
+    <div style={styles.container}>
 
-//
-// function Booklist() {
-//   const listItems = Books.map((book) => (
-//     <div
-//       key={book.id}
-//       style={{
-//         backgroundColor: "#fff",
-//         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//         border: "1px solid #ddd",
-//         borderRadius: "8px",
-//         padding: "20px",
-//         width: "150px",
-//         marginBottom: "15px",
-//       }}
-//     >
-//       <strong>Title:</strong> {book.title} <br />
-//       <strong>Author:</strong> {book.author} <br />
-//       <strong>ID:</strong> {book.id}
-//     </div>
-//   ));
 
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         gap: "15px",
-//         justifyContent: "center",
-//         flexWrap: "wrap",
-//       }}
-//     >
-//       {listItems}
-//     </div>
-//   );
-// }
+      {loading ? (
+        <h2>Loading books...</h2>
+      ) : error ? (
+        <h2 style={{ color: "red" }}>{error}</h2>
+      ) : books.length === 0 ? (
+        <h2>No books available.</h2>
+      ) : (
+        books.map((book) => (
+          <div key={book.id} style={styles.card}>
+            <h2>ID: {book.id}</h2>
+            <h3 style={styles.title}>Title: {book.title}</h3>
+            <p style={styles.author}>Author: {book.author}</p>
 
-// export default Booklist;
+           
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
 
-//************************************************************************* */
+// ✅ CSS Styles
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "20px",
+    flexWrap: "wrap",
+    margin: "40px",
+  },
+  card: {
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    padding: "20px",
+    width: "250px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#fff",
+    textAlign: "center",
+    transition: "transform 0.3s ease, background-color 0.3s ease",
+  },
+  title: {
+    color: "#007bff",
+  },
+  author: {
+    color: "#000",
+  },
+};
 
-// import React, { Component } from "react";
+export default Books;
 
-// class Books extends Component {
-//   render() {
-
-//     //define books into class
-//     const books = [
-//       {
-//         id: 1,
-//         title: "مقدمة ابن خلدون ",
-//         author: "ابن خلدون ",
-//         isbn: "1289499030",
-//       },
-//       {
-//         id: 2,
-//         title: "الحاوي في الطب ",
-//         author: "ابو بكر الرازي ",
-//         isbn: "893847239479",
-//       },
-//       {
-//         id: 3,
-//         title: "كتاب سيبويه",
-//         author: "سيبويه",
-//         isbn: "1234567890",
-//       },
-//       {
-//         id: 4,
-//         title: "تفسير الطبري",
-//         author: "الطبري",
-//         isbn: "0987654321",
-//       },
-//     ];
-
-//     return (
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "center",
-//           gap: "20px",
-//           flexWrap: "wrap",
-//           margin: "40px",
-//         }}
-//       >
-//         {books.map((book) => (
-//           <div
-//             key={book.id}
-//             style={{
-//               border: "1px solid #ddd",
-//               borderRadius: "8px",
-//               padding: "20px",
-//               width: "250px",
-//               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//               backgroundColor: "#fff",
-//             }}
-//           >
-//             <h1>ID: {book.id}</h1>
-//             <h3>Title: {book.title}</h3>
-//             <p>Author: {book.author}</p>
-//             <p>ISBN: {book.isbn}</p>
-//           </div>
-//         ))}
-//       </div>
-//     );
-//   }
-// }
-
-// export default Books;

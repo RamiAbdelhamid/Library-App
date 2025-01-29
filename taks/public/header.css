@@ -9,7 +9,7 @@ color: white;
     background-color: rgb(0, 0, 0);
     text-align: center;
     padding: 10px;
-    position: fixed;
+    position: static;
     width: 100%;
     bottom: 0;
 }
@@ -17,6 +17,4 @@ color: white;
 body{
 
 
-    overflow-x: hidden;
-    overflow-y: hidden;
 }
