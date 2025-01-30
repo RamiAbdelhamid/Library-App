@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Footer from "./Footer";
 import "./App.css";
 import { initializeApp } from "firebase/app";
 import {
@@ -64,6 +65,9 @@ function Signup() {
   };
 
   return (
+
+    <>
+    <Footer/>
     <div className="form-container">
       <form onSubmit={handleSignUp} className="form">
         <h2>{user ? `Welcome, ${name}` : "Sign Up"}</h2>
@@ -120,7 +124,7 @@ function Signup() {
           </button>
         )}
       </form>
-    </div>
+    </div></>
   );
 }
 
